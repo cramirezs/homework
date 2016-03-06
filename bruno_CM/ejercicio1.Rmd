@@ -1,0 +1,65 @@
+---
+title: <center>La estructura de las proteínas</center>
+author: "<center>Ciro Ramírez Suástegui, José Damián Martínez Reyes</center>"
+date: "<center>05/03/2016</center>"
+output:
+  html_document:
+    highlight: pygments
+    theme: journal
+---
+
+### 1. Creen un repositorio git en tepeu, por ejemplo en su home/algoritmos_3D, para ir añadiendo ahí las tareas de los 4 días y sus respectivos informes.
+Enlace: https://github.com/cramirezs/homework
+
+### 2. Que completen los puzzles de Foldit al menos hasta el nivel 4-5, y por el camino vayan tomando capturas de pantalla que reflejen algunos de los conceptos teóricos que hablamos por la mañana:
+
+#### 2.1 Ejemplo de aminoácido con cadena lateral aromática.
+
+![.](http://i64.tinypic.com/m7wfhf.png)
+
+#### 2.2 Ejemplo de aminoácido con cadena lateral chica.
+
+![.](http://i67.tinypic.com/j1353k.png)
+
+#### 2.3 Ejemplo de giro en torno a los ángulos phi/psi de un residuo seleccionado, ¿que pasa cuando si sus vecinos tienen cadenas laterales voluminosas?
+
+![.](http://i64.tinypic.com/dcc1w7.png)  
+![.](http://i68.tinypic.com/2m2e6nd.png)
+
+Cuando los vecinos tienen cadenas laterales voluminosas se restringe mucho la movilidad de los ángulos phi/psi. Las imágenes muestran giros en los ángulos (zonas rojas) y se puede ver cómo este cambio genera interacciones no permitidas con una alfa hélice adyacente.
+
+#### 2.4 Ejemplo de puentes de hidrógeno entre resíduos de una alfa-hélice y entre hojas de una lámina beta.
+
+![.](http://i63.tinypic.com/15xlc42.png)
+
+Desde el punto de vista algorítmico, ¿cuál de los estados de estructura secundaria les parece más difícil de programar? 
+Las láminas β nos parecen más difíciles de programar debido a que tienes que considerar las interacciones mediante puentes de hidrógeno entre cada lámina, si es el caso en que interactúan varias, mientras que las hélices α tienen menos de estos enlaces y no suelen haber entre varias de estas estructuras.
+
+#### 2.5 Ejemplo de residuo hidrofóbico expuesto y luego correctamente "enterrado" tras operaciones con los vecinos.
+**Expuesto:**  
+
+![.](http://i65.tinypic.com/w9ti1d.png)
+
+**“Enterrado”:**  
+
+![.](http://i65.tinypic.com/1nziqa.png)
+
+#### 2.6 Ejemplo de conformaciones distintas con puntuaciones similares, para hacer patente el problema de evaluar lo correcto de una conformación.   
+Obsérvese que es la misma proteína “4-4 y que la diferencia en score es de apenas tres unidades. **Primero una forma “cerrada”:**  
+
+![.](http://i64.tinypic.com/2qda3gj.png)
+
+**Ahora una forma abierta:**  
+
+![.](http://i64.tinypic.com/dmsm6w.png)
+
+
+#### 2.7 De acuerdo con http://goo.gl/G8ChC2 calcula el tiempo que llevaría explorar todas las conformaciones posibles de uno de los péptidos o proteínas que utilicen en los puzzles.  
+
+![.](http://i65.tinypic.com/68zdq1.png)
+
+**Tamaño del péptido:** 16 aminoácidos  
+Tiempo de cambio = 10^-13s  
+**Estados diferentes:** 10 (por ejemplo)  
+
+Tiempo estimado = 10^16^*10^-13^ = 103s para analizar todas las posibles estructuras de esta proteína. Es un péptido muy pequeño y sólo son 1000 segundos pero no se compara en nada con  los 5 seg que tarda E. coli en plegar una proteína (en este caso incluso sea menor).
