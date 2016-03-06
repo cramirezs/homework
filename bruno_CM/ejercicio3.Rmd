@@ -71,5 +71,5 @@ Alineamos d1itoa_Btaurus contra los demás
 Entre **d1itoa_Btaurus y d1atka_Hsapiens** (identidad de 26%):  
 **Comando:** mammoth -p d1itoa_Btaurus.pdb -e d1atka_Hsapiens.pdb
 <center><div style="width:200px; height=200px">
-![.K](http://i64.tinypic.com/ezl405.png)![.](http://i64.tinypic.com/ezl405.png)
+![](./d1itoa_Btaurus\ y\ d1atka_Hsapiens.png)
 </div></center>
