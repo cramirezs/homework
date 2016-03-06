@@ -1,0 +1,75 @@
+---
+title: <center>Alineamientos de estructura, primaria secundaria y terciaria. Algoritmos
+  3D</center>
+author: "<center>Ciro Ramírez Suástegui, José Damián Martínez Reyes</center>"
+date: "<center>05/03/2016</center>"
+output:
+  html_document:
+    highlight: pygments
+    theme: journal
+---
+
+### Pipeline:
+
+Selección de superfamilia en SCOPE:
+
+- d.3.1: Cysteine proteinases
+- Familia: d.3.1.1: Papain-like [54002] (26 protein domains)
+- Dominios:
+    + (Pro)cathepsin B [54022] (3 species)
+    + (Pro)cathepsin K [54028] (2 species)
+    
+Para asegurar que las secuencias coincidan hicimos un programa en perl, el cual extrae la secuencia del archivo .pdb y construye un archivo .fasta:
+
+- fa_constructor.pll
+- Para correr: fa_constructor.pl "file.pdb" "file.fa"
+
+Cálculo de alineamientos pareados:
+
+- Align Sequences Protein BLAST
+- Con los parámetros por default.
+
+Cálculo de los alineamientos estructurales con mammoth (se tomaron las secuencias del alineamiento anterior).  
+prog3.1: para calcular el error (RMSD) de los alineamientos.
+
+### Resultados
+
+#### 1. Selecciona una superfamilia de proteínas de SCOP (http://scop.berkeley.edu) y extrae la secuencia de aminoácidos (ATOM records) y las coordenadas PDB de varios dominios de la misma. Podéis ver un ejemplo de dominio en http://goo.gl/8X4YvZ, y abajo están tanto la secuencia como una liga para descargar las coordenadas.
+
+Proteínas seleccionadas:
+
+- \>d1atka_ d.3.1.1 (A:) (Pro)cathepsin K {Human (Homo sapiens) [TaxId: 9606]}
+- \>d1cpja_ d.3.1.1 (A:) (Pro)cathepsin B {Norway rat (Rattus norvegicus) [TaxId: 10116]}
+- \>g1csb.1 d.3.1.1 (A:,B:) (Pro)cathepsin B {Human (Homo sapiens) [TaxId: 9606]}
+- \>d1itoa_ d.3.1.1 (A:) (Pro)cathepsin B {Cow (Bos taurus) [TaxId: 9913]}
+- \>d2f7da1 d.3.1.1 (A:1-211) (Pro)cathepsin K {Rabbit (Oryctolagus cuniculus) [TaxId: 9986]}
+
+#### 2. Comprueba que las secuencias descargadas coinciden con las coordenadas.
+
+Con los siguientes comando fue más fácil:  
+
+    more “file_.pdb” | grep -v "REMARK" | grep -v "HEADER" | cut -c18-20 | uniq > seq_aa.txt
+    cat d2fjbb_.fa seq_aa.txt | less  
+
+Aunque al final terminamos haciendo un script de Perl ([fa_constructor.pl](https://goo.gl/C0j2Sw)) para extraer la secuencia del archivo de coordenadas y generar un archivo en formato .fasta.
+
+#### 3. Calcula al menos dos alineamiento pareados entre secuencias de aminoácidos de las extraídas en 1 y calcula su %identidad como el total de parejas de residuos idénticas / total parejas alineadas.
+
+Alineamos d1itoa_Btaurus contra los demás
+
+- \>d1atka_ d.3.1.1 (A:) (Pro)cathepsin K {Human (Homo sapiens) [TaxId: 9606]}
+    + 26%
+- \>d1cpja_ d.3.1.1 (A:) (Pro)cathepsin B {Norway rat (Rattus norvegicus) [TaxId: 10116]}
+    + 82%
+- \>g1csb.1 d.3.1.1 (A:,B:) (Pro)cathepsin B {Human (Homo sapiens) [TaxId: 9606]}
+    + 89%
+- \>d2f7da1 d.3.1.1 (A:1-211) (Pro)cathepsin K {Rabbit (Oryctolagus cuniculus) [TaxId: 9986]}
+    + 25%
+
+#### 4. Calcula con mammoth los alineamientos estructurales de los dominios que ya alineaste en 3 en base a su secuencia. Visualízalos con Rasmol como se explica en http://goo.gl/aOVdvp.
+
+Entre **d1itoa_Btaurus y d1atka_Hsapiens** (identidad de 26%):  
+**Comando:** mammoth -p d1itoa_Btaurus.pdb -e d1atka_Hsapiens.pdb
+<center><div style="width:200px; height=200px">
+![.K](http://i64.tinypic.com/ezl405.png)![.](http://i64.tinypic.com/ezl405.png)
+</div></center>
