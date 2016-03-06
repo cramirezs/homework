@@ -8,17 +8,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <div style="color: blue;" markdown="1">
 <center>
-# Múltiples enfoques para el análisis de datos de _ChIP-seq_ y evaluación de _peak calling_.
+# Múltiples enfoques para el análisis de datos de _chIP-seq_ y evaluación de _peak calling_.
 </center>
 </div>
 
 ## Introduccion
 
-Los Factores Transcripcionales (TF) son proteínas que se unen a DNA y ayudan a reclutrar a la RNA Polimerasa para transcribir genes. Los TF tienen sitios particulares de pegado y conocerlos se ha vuelto una importante tarea para los biólogos. En la actualidad hay diferentes maneras para elucidar estos sitios, pero uno de los más usados es ChIP-seq. Desafortunadamente, esta no es una tarea trivial, ya que en el proceso deben hacerse muchos análisis, los cuales no siempre dan resultados constantes. La motivación principal de este proyecto es analizar las diferencias que hay entre diferentes tipos de procesamiento de datos de ChIP-seq, con el fin de identificar cómo afectan los parámetros de los *peak-callers* a los resultados.  
+Los Factores Transcripcionales (TF) son proteínas que se unen a DNA y ayudan a reclutrar a la RNA Polimerasa para transcribir genes. Los TF tienen sitios particulares de pegado y conocerlos se ha vuelto una importante tarea para los biólogos. En la actualidad hay diferentes maneras para elucidar estos sitios, pero uno de los más usados es ChIP-seq. Desafortunadamente, esta no es una tarea trivial, ya que en el proceso deben hacerse muchos análisis, los cuales no siempre dan resultados constantes. La motivación principal de este proyecto es analizar las diferencias que hay entre diferentes tipos de procesamiento de datos de Chip-Seq, con el fin de identificar cómo afectan los parámetros de los *peak-callers* a los resultados.  
 
 Los acercamientos que utilizamos son la significancia, la consistencia y el enriquecimiento de motivos. Definimos la significancia como la importancia de recuperar un motivo dado; la consistencia como recuperar un motivo dado a través de diferentes análisis; y el enriquecimiento de motivos como encontrar el motivo de referencia dentro de los resultados obtenidos.
 
-En el presente trabajo se analiza la información obtenida de un experimento de ChIP-seq, con el factor de transcripcion FNR de *Escherichia Coli*. Más información sobre los datos utilizados puede ser consultada en [GSM1010219](http://goo.gl/tbeM4k) y en [GSM1010224](http://goo.gl/WcL7rv), donde puede verse la información referente a las muestras experimentales y las muestras de input.
+En el presente trabajo se analiza la información obtenida de un experimento de ChiP-seq, con el factor de Transcripcion FNR de *Escherichia Coli*. Más información sobre los datos utilizados puede ser consultada en [GSM1010219](http://goo.gl/tbeM4k) y en [GSM1010224](http://goo.gl/WcL7rv), donde puede verse la información referente a las muestras experimentales y las muestras de input.
 
 
 ## Metodos
@@ -51,13 +51,13 @@ D_n<-c(258.60, 206.43, 179.25, 153.54, 142.65)
 Significancia_MACS<-data.frame('Q value'=Q_val, 'Motifs experiment'=NM_p, 'Motifs negative'=NM_n, 'Highest sign experiment'=HS_p, 'Highest sign negative'=HS_n, 'Ratio sign'=RS)
 Dyads_MACS<-data.frame('Q value'=Q_val, 'Highest sign experiment'=D_p, 'Highest sign negative'=D_n)
 library(knitr)
-kable(Significancia_MACS, col.names = colnames(Significancia_MACS), caption = 'Tabla 1')
+kable(Significancia_MACS, col.names = colnames(Significancia_MACS))
 ```
 
 Los *peaks* se analizaron utilizando la funcion de *Spaced word pairs (dyads)* de peak motifs. Para los datos del experimento, la significancia mas alta era obtenida por el análisis de oligonucleotidos *(position bias)*. Para el control negativo, las sigificancias obtenidas por el analisis de diadas diferían demasiado, por lo que los datos obtenidos por el analisis de diadas se muestran de manera separada.
 
 ```{r echo=FALSE}
-kable(Dyads_MACS, col.names = colnames(Dyads_MACS), caption = 'Tabla 2')
+kable(Dyads_MACS, col.names = colnames(Dyads_MACS))
 ```
 
 En la **tabla 1** se indica el número de motivos que obtuvo cada análisis de peak motifs, además de la significancia más alta obtenida en el análisis (para el control negativo, se utiliza la mayor significancia no obtenida por diadas). En la **tabla 2** se muestra la significancia mas alta obtenida por diadas. 
@@ -102,9 +102,9 @@ El q-value y el FDR (*False Discover Rate*) se relacionan con la siguiente ecuac
 
 ### Enriquecimiento de motivo
 
-El motivo de referencia siguiente corresponde a [FNR](http://goo.gl/qmBT0C).  
+El motivo de referencia es el [FNR](http://goo.gl/qmBT0C).  
 ![PWM logo FNR](http://goo.gl/n3FClp)   
-Se analizaron con RSAT-*Peak motifs* las secuencias arrojadas por el análisis de SWEMBL, tras haber procesados los datos con diferentes valores de gradiente (-R), también llamado valor relativo del background. Los valores R fueron: 0.5, 0.2, 0.1, 0.07, 0.06 y 0.05.
+Se analizaron0 con RSAT-*Peak motifs* las secuencias arrojadas por el análisis de SWEMBL, tras haber procesados los datos con diferentes valores de gradiente (-R), también llamado valor relativo del background. Los valores R fueron: 0.5, 0.2, 0.1, 0.07, 0.06 y 0.05.
 La comparación de resultados, ordenados por el gradiente (-R), se encuentra en la siguiente tabla. Se pueden apreciar el valor R, la cadena, las columnas sobrelapantes con el motivo de referencia, el valor de correlación de Pearson, la correlación de Pearson normalizada y la significancia de cada motivo.  
 
 ```{r echo = F}
@@ -120,11 +120,11 @@ ME_maches <- data.frame('R-Motivo' = r_mot, 'Cadena' = cadena, 'Cols' = columnas
                         '%Al' = alineos, 'r' = rCorrelacion, 'Nr' = rCor.Normalizada,
                         'Sig' = significancia, stringsAsFactors = T)
 library(knitr)
-kable(ME_maches, align = 'c', caption = 'Tabla 3',
+kable(ME_maches, align = 'c', caption = 'Tabla 2',
       col.names = colnames(ME_maches))
 ```
 
-En primera instancia podemos observar (**Tabla 3**) que con un parámetro de R inicial de 0.5 se encuentra el motivo de referencia dentro de los resultados y conforme decrece esta aparece un motivo devuelto por el oligo-análisis (calcula las ocurrencias de oligonucleótidos en un set de secuencias y detecta los sobrerepresentados) hasta llegar una R de 0.06 que no devuelve ninguna coincidencia con el motivo de referencia.   
+En primera instancia podemos observar (**Tabla 2**) que con un parámetro de R inicial de 0.5 se encuentra el motivo de referencia dentro de los resultados y conforme decrece esta aparece un motivo devuelto por el oligo-análisis (calcula las ocurrencias de oligonucleótidos en un set de secuencias y detecta los sobrerepresentados) hasta llegar una R de 0.06 que no devuelve ninguna coincidencia con el motivo de referencia.   
 
 Con esto podemos ver que los valores fluctuan poco entre el diferente parametrizado al obtener los picos con SWEMBL:  
 
@@ -143,7 +143,7 @@ text(x = 1:8, y = rep(-0.02, 4), labels = ME_maches$R.Motivo, cex = 0.6)
 ```
 
 Respecto a la fluctuación de la significancia, como era de esperarse para los motivos coincidentes con el de referencia, se encontraró un mayor valor en los motivos encontrados por análisis de diadas (detecta diadas sobrerrepresentadas en un conjunto de secuencias de ADN; las diadas son un par de oligonucleótidos del mismo tamaño separados por un número fijo de bases). Se seleccionó el análisis de diadas porque el motivo de referencia no podría ser detectado por oligo-análisis debido, probablemente, a su naturaleza dimérica.  
-Sin embargo se observa (**Figura 4**) que la significancia es muy baja desde un inicio lo que hace que sospechemos de los datos obtenidos con este experimento, ya que estamos utilizando precisamente al motivo de referencia para corroborar, desde la obtención de la muestra hasta el procesamiento bioinformático, que el protocolo de _chIP-seq_ fue realizado correctamente.   
+Sin embargo se observa (**Figura 4**) que la significancia es muy baja desde un inicio lo que hace que sospechemos de los datos obtenidos con este experimento, ya que estamos utilizando precisamente al motivo de referencia para corroborar, desde la obtención de la muestra hasta el procesamiento bioinformático, que haya salido bien el protocolo de _chIP-seq_.   
 
 ```{r echo = F, fig.align='center', fig.width=12}
 plot(x = 1:8, 
@@ -160,13 +160,13 @@ text(x = 3, y = 0.7, labels = "Correlación de Pearson normalizada", cex = 0.7)
 ```
 
 
-Para complementar con lo ya observado con la significancia, tenemos las correlaciones de Pearson (medida de la relación lineal entre dos variables cuantitativas, en este caso son las matrices del motivo de referencia y las de los motivos que encontramos que coinciden con FNR) junto a las normalizadas. Puede haber correlaciones altas engañosas obtenidas de un alineamiento parcial, por lo que se normaliza para evitar este efecto al añadir peso a la correlación de acuerdo con la cobertura mutua de los dos motivos comparados. Observamos (**Figura 5**) que las correlaciones son buenas, aunque tomando en cuenta las normalizadas tienen un valor pobre para pensar que son lo suficientemente significativas. Esto podría justificarse con las características y el procesamiento del conjunto de datos, donde posiblemente se obtuvo una pobre recuperación en el protocolo de ChIP-seq.
+Para complementar con lo ya observado con la significancia tenemos las correlaciones de Pearson (medida de la relación lineal entre dos variables cuantitativas, en este caso son las matrices del metovio de referencia y las de los motivos que encontramos que coniciden con FNR) junto a las normalizadas; puede haber correlaciones altas engañosa obtenida de un alineamiento parcial por lo que se normaliza para evitar este efecto mediante añadir peso a la correlación de acuerdo con la cobertura mutua de los dos motivos comparados. Observamos (**Figura 5**) que las correlaciones son buenas aunque tomando en cuenta las normalizadas tienen un valor pobre para pensar que son lo suficientemente significativas. Esto podría justificarse con las características y el procesamiento del conjunto de datos, donde posiblemente se obtuvo una pobre recuperación en el protocolo de chIP-seq.
 
-Los mejores valores tanto para r y Nr (es superado en significancia) son los correspondientes a la diada 0.07-dyadm4 seguido de la 0.5-dyadm1 con mayor significancia. Esto tiene sentido porque evidentemente es nuestro motivo de referencia. Sin embargo, las correlaciones normalizadas bajan considerablemente. Esto se ve influenciado por el soporte que se le da al motivo por parte de las secuencias y específicamente los picos. Tal vez no se logró recuperar bien el motivo debido a alguna falla en la afinidad del anticuerpo o algún otro paso en el análisis.
+Los mejores valores tanto para r y Nr (es superado en significancia) son los correspondientes a la diada 0.07-dyadm4 seguido de la 0.5-dyadm1 con mayor significancia. Esto tiene sentido porque evidentemente es nuestro motivo de referencia, sin embargo, las correlaciones normalizadas bajan considerablemente. Esto se ve influenciado por es soporte que se le da al motivo por parte de las secuencias y específicamente los picos. Tal vez no se logró recuperar bien el motivo debido a alguna falla en la afinidad del anticuerpo o algún otro paso en el análisis.
 
-Cabe manecionar también que el número de sitios encontrados que muestran los logos de Schneider son muchísimos: 147, 230, 166 y 371, cuando en RegulonDB muestra que solo son 84 en E. coli. Esta discrepancia nos indica de nuevo que algo anda mal con los datos que obtuvimos de la extracción con FNR. Se entiende que 84 es el número de sitios que esperas encontrar en el genoma de *E. coli*, por lo que con estos valores hace sentido que haya valores de significancia muy bajos.
+Cabe manecionar también que el número de sitios encontrados que muestran los logos de Schneider son muchísimos; 147, 230, 166 y 371, cuando en RegulonDB muestra que solo son 84 en E. coli. Esta discrepancia nos indica de nuevo que algo anda mal con los datos que tenemos de la estracción con FNR. Tengo entendido que este es el número de sitios que esperas encontrar en el genoma de *E. coli*, por lo que con estos valores podría suponer que tiene sentido que haya valore de significancia muy bajos.
 
-Los análisis con MACS2 son muy parecidos a estos, pero nos pareció mejor no incluirlos en este apartado, ya que se hace un análisis más extenso de ellos en las demás secciones.
+Los análisis con MACS2 son muy parecidos a estos, pero nos pareció mejor no ponerlos aquí debido que no aportaría mucho y, además, se hace un análisis más extendido con los otros dos enfoques; significancia y consistencia.
 
 **Alineamiento de logos:**  
 
@@ -181,7 +181,7 @@ Podemos observar que los sitios, para el motivo encontrado como coincidente en l
 
 ### Consistencia
 
-La diversidad en los métodos y parámetros para análisis de motivos supone ventajas y desventajas en cuanto a la confiabilidad y eliminación de ruido en los resultados. Es necesario entonces analizar la validez de los resultados en diferentes contextos (parámetros). Escencialmente, el análisis de consistencia trata de este tipo de validación.
+La diversidad en los métodos, y parámetros, para análisis de motivos supone ventajas y desventajas en cuanto a la confiabilidad y eliminación de ruido en los resultados. Es necesario entonces analizar la validez de los resultados en diferentes contextos (parámetros). Escencialmente, el análisis de consistencia trata de este tipo de validación.
 En las gráficas podemos observar cómo cambia la significancia de algunas secuencias conforme cambiamos los parámetros indicados para cada *peak-caller* (sólo se grafican las secuencias de mayor significancia).  
 
 A continucación los resultados arrojados por **SWEMBL**: Para este algoritmo el parámetro que cambia es el de R, que es el valor relativo del background o gradiente. En este podemos ver que a medida que decrece, la significancia aumenta por secuencia.  
@@ -203,7 +203,7 @@ text(x=rep(1.8,5),y=c(100,90,80,70,60),labels=c("Rojo: accgccagct", "Amarillo: a
 ```
 
 
-Estos son los resultados de **MACS2**: El parámetro variable es el valor Q, o *q-value*, que se refiere al *cutoff* o valor de corte para la toma de secuencias como motivos. En sentido estricto se trata del mínimo *false discovery rate* (tasa de descurimento de los falsos positivos). En este caso, cuando el valor de corte se hace más pequeño, también lo hace la significancia. Los resultados de las gráficas son consistentes en que los valores más restrictivos del corte se reflejan en su significancia.
+Estos son los resultados de **MACS2**: El parámetro variable es el valor Q, o *q-value*, que se refiere al *cutoff* o valor de corte para la toma de secuencias como motivos. En sentido estricto se trata del mínimo *false discovery rate* (tasa de descurimento de los falsos positivos). En este caso, cuando el valor de corte se hace más pequeño también lo hace la significancia. Los resultados de las gráficas son consistentes en que los valores más restrictivos del corte se reflejan en su significancia.
 
 ```{r echo=FALSE}
 ##Plotting MACS
@@ -219,7 +219,7 @@ points(x=5,y=18.05, col="green", lwd=1)
 text(x=rep(2,5),y=c(30,25,20,15,10),labels=c("Cyan: atgaaaaaataaaaagaaaa", "Naranja: aacaaaataaaaaattaaaa", "Azul: aacaaaaattaaaaaagaaa", "Morado:gatcaattttttattttgtt","Verde: attgatcnngatcaat"))
 ```
 
-Observaciones: Para esta última gráfica se hicieron dos análisis, con y sin diadas. La diferencia en resultados fue únicamente el punto verde, aunque con significancia mayor a los resultados sin diadas. Además, se recuperaron más motivos en el análisis por diadas, pero sus significancias seguían siendo, en general, bajas. Otro punto importante es que las significancias en los *q-value* de 0.1 y 0.05 son las mismas y por motivos de visualización se redondearon los valores para distinguir entre las líneas Naranja y Azul.
+Observaciones: Para esta última gráfica se hicieron dos análisis, con o sin diadas. La diferencia en resultados fué únicamente el punto verde, aunque con significancia mayor a los resultados sin diadas. Además, se recuperaron más motivos en el análisis por diadas, pero sus significancias seguían siendo, en general, bajas. Otro punto importante es que las significancias en los *q-value* de 0.1 y 0.05 son las mismas y por motivos de visualización se redondearon unos valores para ver las líneas Naranja y Azul.
 
 ***  
   
@@ -232,17 +232,19 @@ Tras comparar los resultados obtenidos, podemos ver que los resultados entre el 
 
 ### Enriquecimiento de motivo
 
-Después de comparar los resultados obtenidos con SWEMBL (y algunos con MACS2) podemos decir que sí encontramos el motivo de referencia dentro de nuestro conjunto de datos, por lo que, sólo basados en este criterio, podría validarse el buen seguimiento del protocolo ChIP-seq. Sin embargo, dado que tenemos valor de significacia y **correlación** poco concluyentes se refuerza la idea (como en el análisis de significacia) de que pudo haber salido algo mal en la fase de laboratorio o en el procesamiento de los datos. Se apuesta más por la **obtención de datos del *input***, aunque evidentemente debería revisarse cada aspecto. Para ver cómo salió el procesamiento de datos o qué *peak caller* deberíamos usar, tenemos que tomar en cuenta el análisis de consistencia, pero no debemos suponer que éste nos determina que parámetros usar en un posterior análisis, ya que esta prueba es específica para este cojunto de datos.  
+Después de comparar los resultados obtenidos con el SWEMBL (y algunos con MACS2) podemos decir que sí encontramos el motivo de referencia dentro de nuestro conjunto de datos, por lo que, solo basados en este creiterio, podría validarse el buen seguimiento del protocolo chIP-seq; sin embargo, dado que tenemos valor de significacia y **correlación** poco concluyentes se refuerza la idea (como en el análisis de significacia) de que pudo haber salido algo mal en la fase de laboratorio o en el procesamiento de los datos; apostaría más por la **obtención de datos del *input***, aunque evidentemente debería revisarse cada aspecto. Para ver cómo salió el procesamiento de datos o qué *peak caller* deberíamos usar, tenemos que tomar en cuenta el análisis de consistencia, pero no debemos pensar que este nos va a ayudar a determinar si un posterior análisis debe hacerse con qué parámetros, debido a que es más específico para este cojunto de datos.  
+
+Cabe manecionar también que el número de sitios encontrados que muestran los logos de Schneider son muchísimos; 147, 230, 166 y 371, cuando en RegulonDB muestra que solo son 84 en E. coli. Esta discrepancia nos indica de nuevo que algo anda mal con los datos que tenemos de la estracción con FNR.  
 
 
 ### Consistencia
 
-Dados los resultados obtenidos, podemos decir que ambos algoritmos presentan una buena aproximación al obtener motivos y que, en cada uno, se recuperan las mismas secuencias (o motivos muy similares) con significancias diferentes. En SWEMBL, el cambio en el valor relativo del background nos dice que entre más pequeño es el background, las secuencias se verán sobrerepresentadas. Esto nos daría una alza en la significancia, que puede observarse bien. En cuanto a MACS, a medida que el valor de corte se hace más restrictivo, la probabilidad de encontrar un motivo baja y por tanto su significancia. Estos resultados son consistentes con lo que uno esperaría observar en los análisis.
+Dados los resultados obtenidos podemos decir que ambos algoritmos presentan una buena aproximación al obtener motivos y que, en cada uno, se recuperan las mismas secuencias (o motivos muy similares) con significancias diferentes. En SWEMBL el cambio en el valor relativo del background nos dice que entre más pequeño es el background las secuencias se verán sobrerepresentadas lo que nos daría una alza en la significancia, y esto se puede observar bien. En cuanto a MACS, a medida que el valor de corte se hace más restrictivo la probabilidad de encontrar un motivo baja y por tanto su significancia. Estos resultados son consistentes con lo que uno esperaría observar en los análisis.
 
 Al final, lo que nos debe interesar es que hay motivos que se recupera en cada paso del cambio de parámetro (o en la mayoría), y que las excepciones (punto verde en MACS2) pueden deberse a otros factores dependientes del set de datos.
 
 
-Se sugeriría que el ChIP-seq con el factor de transcripcion, así como el *input*, se repitieran para obtener datos de mejor calidad. En general se plantea que deba llevarse a cabo la repetición de todos los procedimientos, así como la utilización de material de mejor calidad o más reciente en la fase de laboratorio.  
+Se sugeriría que el ChIP-seq con el factor de transcripcion, así como el *input*, se repitieran para obtener datos de mejor calidad. En general se plantea que deba llevarse a cabo la repetición de todos los procedimientos así como la utilización de material de mejor calidad o más reciente en la fase de laboratorio.  
 
 
 * * * * * * 
