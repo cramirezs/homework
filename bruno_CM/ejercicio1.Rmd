@@ -33,7 +33,7 @@ Cuando los vecinos tienen cadenas laterales voluminosas se restringe mucho la mo
 ![.](http://i63.tinypic.com/15xlc42.png)
 
 Desde el punto de vista algorítmico, ¿cuál de los estados de estructura secundaria les parece más difícil de programar? 
-Las láminas β nos parecen más difíciles de programar debido a que tienes que considerar las interacciones mediante puentes de hidrógeno entre cada lámina, si es el caso en que interactúan varias, mientras que las hélices α tienen menos de estos enlaces y no suelen haber entre varias de estas estructuras.
+Las láminas β nos parecen más difíciles de programar debido a que tienes que considerar las interacciones mediante puentes de hidrógeno entre cada lámina, si es el caso en que interactúan varias, mientras que las hélices α tienen menos de estos enlaces puentes de hidrógeno y no suelen haber entre varias de estas estructuras.
 
 #### 2.5 Ejemplo de residuo hidrofóbico expuesto y luego correctamente "enterrado" tras operaciones con los vecinos.
 **Expuesto:**  
