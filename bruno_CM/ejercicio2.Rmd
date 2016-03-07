@@ -1,0 +1,94 @@
+---
+title: <center>Predicción de promotores mediante el algoritmo Nearest Neighbor $\Delta
+  G$ calculator</center>
+author: "<center>Ciro Ramírez Suástegui, José Damián Martínez Reyes</center>"
+date: "<center>05/03/2016</center>"
+output:
+  html_document:
+    highlight: pygments
+    theme: journal
+  pdf_document: default
+---
+
+El modelo Nearest Neighbor (NN) aproxima la estabilidad molecular de un ácido nucleico en disolución a partir de su secuencia, que se analiza como una secuencia de dinucleótidos solapantes de interacciones aditivas, cuyas energías se han determinado experimentalmente ([SantaLucia, 1998](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC19045/); [Breslauer et al., 1986](http://www.pnas.org/content/83/11/3746)).^[1](http://eead-csic-compbio.github.io/bioinformatica_estructural/node25.html)^
+
+El siguiente diagrama muestra el flujo del programa, solo que tendrá algunas modificaciones:  
+<center><div style="width:350px; height=250px">
+![.](http://i68.tinypic.com/iycsxy.jpg)
+</div></center>  
+Algoritmo de Kanhere & Bansal (2005), que se basa en calcular la diferencia de $\Delta G$ entre dos ventanas en torno a una posición $n$.  
+
+## El código  
+
+El archivo del programa estará [aquí](https://github.com/cramirezs/homework/blob/master/codes/NN_algorithm.pl).
+
+**Agregamos las librerías y las opciones del programa:**  
+```
+use strict; # To restrict unsafe constructs
+use Getopt::Long; # Let us take data from the line
+my %opts = (); # Hash declaration
+# Add keys with their values
+GetOptions (\%opts, 'h'); # be sure the field exist
+if(($opts{'h'})){
+   &PrintHelp();
+}
+```
+Para llamar al programa `program_name [-h] file`  
+### Ahora definimos las variables y parámetros globales:  
+```
+# Varaibles globales
+my $T           = 37; # temperatura(C)
+my $windowL     = 15;  # tamaño de la ventana, http://www.biomedcentral.com/1471-2105/6/1
+my %NNparams    = ( 
+  # SantaLucia J (1998) PNAS 95(4): 1460-1465.
+	# [NaCl] 1M, 37C & pH=7 
+	# H(enthalpy): kcal/mol	, S(entropía): cal/kmol
+	# definimos los valores para cada dinucleótido
+	'AA/TT' , {'H',-7.9, 'S',-22.2}, 'AT/TA' , {'H',-7.2, 'S',-20.4},
+	'TA/AT' , {'H',-7.2, 'S',-21.3}, 'CA/GT' , {'H',-8.5, 'S',-22.7},
+	'GT/CA' , {'H',-8.4, 'S',-22.4}, 'CT/GA' , {'H',-7.8, 'S',-21.0},
+	'GA/CT' , {'H',-8.2, 'S',-22.2}, 'CG/GC' , {'H',-10.6,'S',-27.2},
+	'GC/CG' , {'H',-9.8, 'S',-24.4}, 'GG/CC' , {'H',-8.0, 'S',-19.9},
+	# Costo de inicio de la secuencia
+	'G'     , {'H', 0.1, 'S',-2.8 }, 'A'     , {'H', 2.3, 'S',4.1  },
+	# Corrección de simetría
+	'sym'   , {'H',   0, 'S',-1.4 } );
+my %seqs; # Secuencias
+my @names; # Nombre de la secuencia
+my $g_deltaG; Su dG
+```
+### Leemos el archivo de la secuencia:  
+```
+# verificamos que exista el archivo
+my $infile = $ARGV[0] || die "# usage: $0 <promoters file>\n";
+# Visualizamos las condiciones
+print "# parameters: Temperature=$T gC Window=$windowL\n\n";
+# Abrimos nuestro archivo y comenzamos
+open(SEQ, $infile) || die "# cannot open input $infile : $!\n";
+print("Reading sequences...\n");
+print("Calculating dGs...\n");
+while(<SEQ>)
+{
+  if(/^(b\d{4}) \\ ([ATGC]+)/)
+	{
+		my ($name,$seq) = ($1,$2);
+		#printf("sequence %s (%d nts)\n",$name,length($seq));
+		
+		# Call the subroutine and save the parameters needed Ca
+		$g_deltaG = duplex_deltaG($seq, $T);
+		$seqs{$name}{'seq'} = $seq; # Save string in a global hash %seqs
+		$seqs{$name}{'dG'} = $g_deltaG;
+		printf("%s \n", $seqs{$name});
+	}
+}
+close(SEQ);
+```
+### Subrutinas:  
+
+### L
+```
+
+```
+
+
+## Resultados  
