@@ -311,7 +311,6 @@ sub PrintHelp {
 Resultamos con un archivo de nombre *predicted_TSS.txt*. Sin embargo pudimos obtener varios valores de corte rápidamente, dada las características del programa.
 
 ```{r echo = FALSE, warning = FALSE}
-setwd("/home/cramirez/Documents/upogs/4/beii//bruno_CM/homework/bruno_CM")
 predicted_tss_s0.9 <- read.table(file = "./predicted_TSS_0.97_-18.37.txt",
                             sep = "\t",
                             col.names = c("id","pos", "D", "E1", "E2", "result"))
