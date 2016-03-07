@@ -24,21 +24,25 @@ El archivo del programa estará [aquí](https://github.com/cramirezs/homework/bl
 
 **Agregamos las librerías y las opciones del programa:**  
 ```
-use strict; # To restrict unsafe constructs
-use Getopt::Long; # Let us take data from the line
-my %opts = (); # Hash declaration
-# Add keys with their values
-GetOptions (\%opts, 'h'); # be sure the field exist
+use strict; # Para restringir construcciones no seguras
+use warnings; # Advertencias del código
+use Getopt::Long; # LTomamos los parámetros y datos en el prompt
+my %opts = ();
+# Agragamos las llaves y sus valores para los parámetros del prompt
+GetOptions (\%opts, 'h'); # Tomamos las intrucciones
 if(($opts{'h'})){
    &PrintHelp();
 }
-```
+```  
+
 Para llamar al programa `program_name [-h] file`  
+
 ### Ahora definimos las variables y parámetros globales:  
 ```
 # Varaibles globales
 my $T           = 37; # temperatura(C)
-my $windowL     = 15;  # tamaño de la ventana, http://www.biomedcentral.com/1471-2105/6/1
+my $windowL     = 15;  # tamaño de la ventana
+# http://www.biomedcentral.com/1471-2105/6/1
 my %NNparams    = ( 
   # SantaLucia J (1998) PNAS 95(4): 1460-1465.
 	# [NaCl] 1M, 37C & pH=7 
@@ -54,13 +58,15 @@ my %NNparams    = (
 	# Corrección de simetría
 	'sym'   , {'H',   0, 'S',-1.4 } );
 my %seqs; # Secuencias
-my @names; # Nombre de la secuencia
-my $g_deltaG; Su dG
+my $g_deltaG; # Para el dG
+my $n; # Contador
 ```
 ### Leemos el archivo de la secuencia:  
 ```
-# verificamos que exista el archivo
+# verificamos que exista el archivo y tomamos los cutoff
 my $infile = $ARGV[0] || die "# usage: $0 <promoters file>\n";
+#my $cut1 = $ARGV[1] || die "# usage: $1 <cut-off for Dn>\n";
+#my $cut2 = $ARGV[2] || die "# usage: $2 <cut-off for E1>\n";
 # Visualizamos las condiciones
 print "# parameters: Temperature=$T gC Window=$windowL\n\n";
 # Abrimos nuestro archivo y comenzamos
@@ -71,24 +77,220 @@ while(<SEQ>)
 {
   if(/^(b\d{4}) \\ ([ATGC]+)/)
 	{
-		my ($name,$seq) = ($1,$2);
-		#printf("sequence %s (%d nts)\n",$name,length($seq));
+		# Tomamos el identificador y la secuencia (459 nts)
+		my ($name, $seq) = ($1, $2);
+		#printf("sequence %s (%d nts)\n",$name, length($seq));
 		
-		# Call the subroutine and save the parameters needed Ca
-		$g_deltaG = duplex_deltaG($seq, $T);
-		$seqs{$name}{'seq'} = $seq; # Save string in a global hash %seqs
-		$seqs{$name}{'dG'} = $g_deltaG;
-		printf("%s \n", $seqs{$name});
+		# Construyendo la colección de secuencias
+		$seqs{$name}{'seq'} = $seq;
+		# Posteriormente %seqs tendrá otro hash con las ventanas y sus dGs
 	}
 }
 close(SEQ);
 ```
 ### Subrutinas:  
 
-### L
-```
+### Secuencia complementaria  
+
+- Obtiene la secuencia complementaria
+- Parámetro: Secuencia de ADN
+- Devuelve: Secuencia complementaria
 
 ```
+sub complement{ $_[0] =~ tr/ATGC/TACG/; return $_[0] }
+```
 
+### $\Delta G$ del duplex de ADN
+
+- Calcula la energía libre de un dúplex de ADN
+- Parámetros: 1) Secuencia de ADN; 2) Temperatura Celsius
+- Revuelve: Escalar de energía libre
+- Usa el hash global %NNparams
+
+```
+sub duplex_deltaG
+{
+     my ($seq, $tCelsius) = @_;
+	my $tK = 273.15 + $tCelsius;
+	my ($DNAstep, $nt, $dG, $total_dG) = ('','',0,0);
+	my @sequence = split(//, uc($seq));
+	
+	# Agregar dG de dinucleótidos sobrelapados
+	for($n=0; $n<$#sequence; $n++)
+	{
+		# Construimos el identificador concatenando los dinucleótidos
+		$DNAstep = $sequence[$n].$sequence[$n+1].'/'.
+			complement($sequence[$n].$sequence[$n+1]);
+		
+		if(!defined($NNparams{$DNAstep})) # Pregunta si está el dinucleótido
+		{
+			$DNAstep = reverse($DNAstep); # Si no, obtiene la reversa
+		}
+		
+		$dG = ((1000*$NNparams{$DNAstep}{'H'})-
+				($tK*$NNparams{$DNAstep}{'S'}))
+				/ 1000 ; # Calculating the dG value
+		
+		$total_dG += $dG;
+	}
+	
+	# Agregar corrección para inicio de secuencia
+	$nt = $sequence[0]; # Primer par; pregunta si está
+	# Si no, usa el complementario
+	if(!defined($NNparams{$nt})){ $nt = complement($nt) }
+	$total_dG += ((1000*$NNparams{$nt}{'H'})-
+					($tK*$NNparams{$nt}{'S'}))
+					/ 1000;
+	
+	$nt = $sequence[$#sequence]; # Último par; pregunta si está
+	# Si no, usa el complementario
+	if(!defined($NNparams{$nt})){ $nt = complement($nt) }
+	$total_dG += ((1000*$NNparams{$nt}{'H'})-
+					($tK*$NNparams{$nt}{'S'}))
+					/ 1000;
+					
+	# Corrección de simetría
+	$seq = join('', @sequence);
+	my $fseq = substr($seq, 0, $windowL/2); # Definimos una cadena para
+	# mejor manejo y sacamos la reversa complementaria
+	my $rseq = complement(reverse(substr($seq, $#sequence-$windowL/2, $windowL)));
+	if ($fseq eq $rseq)
+	{
+		$total_dG += ((1000*$NNparams{'sym'}{'H'})-
+			($tK*$NNparams{'sym'}{'S'}))
+			/ 1000;
+	}
+
+	return $total_dG;
+}
+```
+
+### Predictor de TSS
+
+- Calcular E1, e2 y D para cada uno de los n
+- Predecir los promotores respecto a valores de corte de e1 y D
+- Parámetros: 1) %hash de secuencias 2) 
+- Devuelve: hash de predicciones
+
+```
+sub predict
+{
+  my $seqs = shift;
+	my $cut1 = shift;
+	my $cut2 = shift;
+	# Definimos las variables que vamos a usar
+	my $e1;
+	my $e2;
+	my $Dn;
+	my %preds;
+	my $ntposition;
+
+	# Volvemos a recorrer todas nuestras secuencias
+	foreach my $name (keys(%seqs))
+	{
+		# Recorremos toda la secuencia
+		for($ntposition = 0; length($seqs{$name}{'seq'}) >= $ntposition+199+$windowL; $ntposition++)
+		{
+			# Para E1; recorremos la longitud, sumamos y dividimos
+			$e1 = 0;
+			for($n = $ntposition; $n!=$ntposition+50; $n++)
+			{
+				$e1 += $seqs{$name}{$n};
+			}
+			$e1 /= 50;
+			$e2 = 0;
+			# Para E2; recorremos la longitud, sumamos y dividimos
+			for($n = $ntposition+99; $n!=$ntposition+199; $n++)
+			{
+				$e2 += $seqs{$name}{$n};
+				#print "Segundo ", $ntposition, "\t", $e2,  "\tLimite: ", length($seqs{$name}{'seq'})-213, "\n";
+			}
+			$e2 /= 100;
+			# Obtenemos la diferencias entre E2 y E1: D(n)
+			$Dn = 0;
+			$Dn = $e2 - $e1;
+			# Guardamos los valores para cada posición
+			$preds{$name}{$ntposition}{'Dn'} = $Dn;
+			$preds{$name}{$ntposition}{'e1'} = $e1;
+			$preds{$name}{$ntposition}{'e2'} = $e2;
+			# Verificamos si pasan el umbral
+			# Y reportamos si es positivo o negativo
+			if($Dn > $cut1 and $e1 > $cut2)
+			{
+				$preds{$name}{$ntposition}{'result'} = "positivo";
+			}else
+			{
+				$preds{$name}{$ntposition}{'result'} = "negativo";
+			}
+		}
+	}
+	return(%preds);
+}
+```
+
+## Programa principal
+
+### Obtener las ventanas y sus dG
+
+```
+foreach my $name (keys(%seqs))
+{
+  # Recorremos toda la secuencia
+	for(my $ntposition = 0; $ntposition <= length($seqs{$name}{'seq'})-$windowL; $ntposition++)
+	{
+		# Tomamos por ventanas hasta llegar al número del largo de la secuencia
+		# menos el tamaño de la ventana
+		my $subseq = substr($seqs{$name}{'seq'}, $ntposition, $windowL);
+		# Llamamos a la subrutina que calcula todos los dG de cada ventana
+		$seqs{$name}{$ntposition} = duplex_deltaG($subseq, $T);
+	}
+}
+```
+
+### Definir los parámetros de corte y llamar al predictor
+```
+print("Cut-off for\nDn = ");
+my $cut1 = <STDIN>;
+print("Cut-off for\nE1 = ");
+my $cut2 = <STDIN>;
+
+my %predictions = predict(\%seqs, $cut1, $cut2);
+```
+
+### Creación del reporte de sitios predichos
+
+```
+my $report = "predicted_TSS.txt";
+open(my $fh, '>', $report) or die "Could not open file '$report' $!";
+foreach my $name (keys(%predictions))
+{
+  # Recorremos las posicipones de las secuencias
+	for(my $ntposition = 0; length($seqs{$name}{'seq'}) >= $ntposition+199+$windowL; $ntposition++)
+	{
+		# Solo guardamos las que tenemos como positivas
+		if($predictions{$name}{$ntposition}{'result'} eq "positivo")
+		{
+			print $fh ($name, "\t", $ntposition-150, "\t");
+			print $fh ($predictions{$name}{$ntposition}{'Dn'}, "\t");
+			print $fh ($predictions{$name}{$ntposition}{'e1'}, "\t");
+			print $fh ($predictions{$name}{$ntposition}{'e2'}, "\n");
+		}
+	}
+}
+close $fh;
+print "Done\n";
+```
+
+### Ayuda del programa
+
+```
+##################################################################
+#### Despliega la ayuda en linea con opcion -h ###################
+##################################################################
+sub PrintHelp {
+   system "pod2text -c $0 "; # Convert POD data to formatted ASCII text 
+   exit();
+}
+```
 
 ## Resultados  
