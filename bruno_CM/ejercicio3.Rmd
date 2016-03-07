@@ -59,12 +59,61 @@ Alineamos d1itoa_Btaurus contra los demás
 
 - \>d1atka_ d.3.1.1 (A:) (Pro)cathepsin K {Human (Homo sapiens) [TaxId: 9606]}
     + 26%
+    
+```
+d1atka_ d.3.1.1 (A:) (Pro)cathepsin K {Human (Homo sapiens) [TaxId: 9606]}
+68.9   68.9 	94% 	5e-19	26% 	Query_107521
+Query  2    PESFDAREQWPNCPTIKEIRDQGSCGSCWAFGAVEAISDRICIHSNVNVEVSAEDMLTCG  61
+            P+S D R+ +     +  +++QG CGSCWAF +V A+  ++       + +S ++++ C 
+Sbjct  2    PDSVDYRKGY-----VTPVKNQGQCGSCWAF-SVGALEGQL---KTGKLNLSPQNLVDCV  52
+
+Query  62   ECGDGCNGFPSGAWNFWTK--GLVSGLYNSHVGCRPYSIPCEH-VNGSRPCTGEGDTPKC  118
+               DGC G+ + A+ +  K  G+ S     +VG       C +   G   C G  + P+ 
+Sbjct  53   SENDGC-GYMTNAFQYVQKNRGIDSEDAYPYVGQES----CMYNPTGKAKCRGYREIPE-  106
+
+Query  119  SKTCEPGYSPSYKEDKHFGCSYSVANEKEIMAEIYKNGPVEGAF--SVYSDFLYKSGVY-  175
+                                     NEK +   + + GPV  A   S+ S   Y  GVY 
+Sbjct  107  ------------------------GNEKALKRAVARVGPVSVAIDASLTSFQFYSKGVYD  142
+
+Query  176  QHVSGEIMGHAIRILGWGVENGTPYWLVGNSWNTDWGDNGFKIL-RGQDHCGI  227
+            +  + + + HA+  +G+G++ G  +W + NSW  +WG+ G+ ++ R ++ CGI
+Sbjct  143  ESCNSDNLNHAVLAVGYGIQKGNKHW-IKNSWGENWGNKGYILMARNKNACGI  194
+
+```
+
 - \>d1cpja_ d.3.1.1 (A:) (Pro)cathepsin B {Norway rat (Rattus norvegicus) [TaxId: 10116]}
     + 82%
 - \>g1csb.1 d.3.1.1 (A:,B:) (Pro)cathepsin B {Human (Homo sapiens) [TaxId: 9606]}
     + 89%
+
+```
+g1csb.1 d.3.1.1 (A:,B:) (Pro)cathepsin B {Human (Homo sapiens) [TaxId: 9606]}
+420   420 	100% 	3e-154	89% 	Query_107523
+Query  1    LPESFDAREQWPNCPTIKEIRDQGSCGSCWAFGAVEAISDRICIHSNVNVEVSAEDMLTC  60
+            LP SFDAREQWP CPTIKEIRDQGSCGSCWAFGAVEAISDRICIH+NV+VEVSAED LTC
+Sbjct  1    LPASFDAREQWPQCPTIKEIRDQGSCGSCWAFGAVEAISDRICIHTNVSVEVSAED-LTC  59
+
+Query  61   GE-CGDGCNGFPSGAWNFWT-KGLVSGLYNSHVGCRPYSIPCEHVNGSRPCTGEGDTPKC  118
+            G  CGDGCNG+P+ AWNFWT KGLVSGLY SHVGCRPYSIPCEHVNGSRPCTGEGDTPKC
+Sbjct  60   GSMCGDGCNGYPAEAWNFWTRKGLVSGLYESHVGCRPYSIPCEHVNGSRPCTGEGDTPKC  119
+
+Query  119  SKTCEPGYSPSYKEDKHFGC-SYSVAN-EKEIMAEIYKNGPVEGAFSVYSDFLYKSGVYQ  176
+            SK CEPGYSP+YK+DKH+G  SYSV+N EK+IMAEIYKNGPVEGAFSVYSDFLYKSGVYQ
+Sbjct  120  SKICEPGYSPTYKQDKHYGYNSYSVSNSEKDIMAEIYKNGPVEGAFSVYSDFLYKSGVYQ  179
+
+Query  177  HVSGEIMGHAIRILGWGVENGTPYWLVGNSWNTDWGDNGFKILRGQDHCGIESEIVAGMP  236
+            HV+GE MGHAIRILGWGVENGTPYWLV NSWNTDWGDNGFKILRGQDHCGIESE VAG+P
+Sbjct  180  HVTGE-MGHAIRILGWGVENGTPYWLVANSWNTDWGDNGFKILRGQDHCGIESE-VAGIP  237
+
+Query  237  CT  238
+             T
+Sbjct  238  RT  239
+```
+
 - \>d2f7da1 d.3.1.1 (A:1-211) (Pro)cathepsin K {Rabbit (Oryctolagus cuniculus) [TaxId: 9986]}
     + 25%
+
+Los alineamientos los podemos ver [aquí](https://drive.google.com/file/d/0BxnQoRh7iZVmSmI0eGZINjNlV0k/view?usp=sharing).  
 
 #### 4. Calcula con mammoth los alineamientos estructurales de los dominios que ya alineaste en 3 en base a su secuencia. Visualízalos con Rasmol como se explica en http://goo.gl/aOVdvp.
 
