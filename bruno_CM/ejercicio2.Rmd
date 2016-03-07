@@ -310,26 +310,49 @@ sub PrintHelp {
 
 Resultamos con un archivo de nombre *predicted_TSS.txt*. Sin embargo pudimos obtener varios valores de corte rápidamente, dada las características del programa.
 
-```{r echo = FALSE}
-predicted_tss_s0.9 <- read.table(file = "./bruno_CM/predicted_TSS_0.97_-18.37.txt",
+```{r echo = FALSE, warning = FALSE}
+setwd("/home/cramirez/Documents/upogs/4/beii//bruno_CM/homework/bruno_CM")
+predicted_tss_s0.9 <- read.table(file = "./predicted_TSS_0.97_-18.37.txt",
                             sep = "\t",
                             col.names = c("id","pos", "D", "E1", "E2", "result"))
-predicted_tss_s0.7 <- read.table(file = "./bruno_CM/predicted_TSS_2.35_-18.07.txt",
+predicted_tss_s0.7 <- read.table(file = "./predicted_TSS_2.35_-18.07.txt",
                             sep = "\t",
                             col.names = c("id","pos", "D", "E1", "E2", "result"))
 head(predicted_tss_s0.7)
 ```
 
-### Graficamos $D(n)$, E1 y E2 para una posición $n$ al azar  
+**Podemos graficar $D(n)$, E1 y E2 para la secuencia "b1130"**. Procesada con una sensibilidad de 0.7 se puede observar un valor de $D(n)$ sobre el umbral, lo que nos indica que podría estar allí el TSS.  
+
+```{r echo = FALSE}
+id <- "b1130"
+plot(x = predicted_tss_s0.7[predicted_tss_s0.7$id==id, 'pos'],
+     y = predicted_tss_s0.7[predicted_tss_s0.7$id==id, 'E1'],
+     xlim = c(-400, 50),
+     ylim = c(-20, 5), type = "l", horiz = 0.2,
+     ylab = "Energía libre de Gibbs", xlab = "Posición",
+     main = "Para b1130 con sensibilidad de 0.7")
+lines(x = predicted_tss_s0.7[predicted_tss_s0.7$id==id, 'pos'],
+     y = predicted_tss_s0.7[predicted_tss_s0.7$id==id, 'E2'],
+     type = "l")
+lines(x = predicted_tss_s0.7[predicted_tss_s0.7$id==id, 'pos'],
+     y = predicted_tss_s0.7[predicted_tss_s0.7$id==id, 'D'],
+     type = "l")
+lines(-400:50, y = rep(2.37,451), lty = 2, col = "red")
+lines(-400:50, y = rep(-18.07,451), lty = 2, col = "blue")
+lines(-400:50, y = rep(0,451))
+text(x=0, y=c(2.8,-17.6), labels = c("D cut-off", "E1 cut-off"), cex = 0.7)
+```
+
+En esta sección podemos **graficamos $D(n)$, E1 y E2 para una posición $n$ al azar** para ver más predicciones de TSS de las demás secuencias.
 
 ```{r echo = FALSE}
 id <- sample(levels(predicted_tss_s0.9[,'id']),1)
 plot(x = predicted_tss_s0.7[predicted_tss_s0.7$id==id, 'pos'],
      y = predicted_tss_s0.7[predicted_tss_s0.7$id==id, 'E1'],
-     xlim = c(-400, 50), xlabel = "Posición",
+     xlim = c(-400, 50),
      ylim = c(-20, 5), type = "l", horiz = 0.2,
-     ylabel = "Energía libre de Gibbs",
-     main = "Para un n alaeatorio con sensibilida de 0.7")
+     ylab = "Energía libre de Gibbs", xlab = "Posición",
+     main = "Para un n alaeatorio con sensibilidad de 0.7")
 lines(x = predicted_tss_s0.7[predicted_tss_s0.7$id==id, 'pos'],
      y = predicted_tss_s0.7[predicted_tss_s0.7$id==id, 'E2'],
      type = "l")
