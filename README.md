@@ -1,9 +1,10 @@
 # homework
 BEII - Bruno CM and Jaques vH - homework
 
-## Bioinformatics II: Homework
+## Bioinformatics II
 
-### Undergraduate program on genomic sciences
-12th Generation
-Ciro Ramírez Suástegui
+### Undergraduate program on genomic sciences  
+
+12th Generation  
+Ciro Ramírez Suástegui  
 José Damián Martínez Reyes
