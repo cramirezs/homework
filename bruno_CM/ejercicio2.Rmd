@@ -4,10 +4,10 @@ title: <center>Predicción de promotores mediante el algoritmo Nearest Neighbor 
 author: "<center>Ciro Ramírez Suástegui, José Damián Martínez Reyes</center>"
 date: "<center>05/03/2016</center>"
 output:
+  pdf_document: default
   html_document:
     highlight: pygments
     theme: journal
-  pdf_document: default
 ---
 
 El modelo Nearest Neighbor (NN) aproxima la estabilidad molecular de un ácido nucleico en disolución a partir de su secuencia, que se analiza como una secuencia de dinucleótidos solapantes de interacciones aditivas, cuyas energías se han determinado experimentalmente ([SantaLucia, 1998](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC19045/); [Breslauer et al., 1986](http://www.pnas.org/content/83/11/3746)).^[1](http://eead-csic-compbio.github.io/bioinformatica_estructural/node25.html)^
@@ -249,17 +249,20 @@ foreach my $name (keys(%seqs))
 
 ### Definir los parámetros de corte y llamar al predictor  
 
-Nos fijamos en la siguiente tabla.
+Nos fijamos en la siguiente tabla. 
+
 ![.](http://i64.tinypic.com/zk1huc.jpg)
 
 Decidimos tomar como parámetros de corte a:  
 
-| D(n) | E1 | sensibilidad |
-|------|----| -------------|
-| 2.35 | -18.07 | 0.7 |
+| D(n) | E1 | sensibilidad |  
+|------|----| -------------|  
+| 2.35 | -18.07 | 0.7 |  
 
-Esto porque quisimos situarnos en el centro de las gráficas de sensibilidad y precisión.
-![.](http://i67.tinypic.com/2itq26b.png)
+Esto porque quisimos situarnos en el centro de las gráficas de sensibilidad y precisión.  
+
+![.](http://i67.tinypic.com/2itq26b.png)  
+
 
 ```
 print("Cut-off for\nDn = ");
@@ -311,6 +314,7 @@ sub PrintHelp {
 Resultamos con un archivo de nombre *predicted_TSS.txt*. Sin embargo pudimos obtener varios valores de corte rápidamente, dada las características del programa.
 
 ```{r echo = FALSE, warning = FALSE}
+setwd("/home//cramirez/Documents/upogs/4/beii/bruno_CM/homework/bruno_CM/")
 predicted_tss_s0.9 <- read.table(file = "./predicted_TSS_0.97_-18.37.txt",
                             sep = "\t",
                             col.names = c("id","pos", "D", "E1", "E2", "result"))
@@ -320,9 +324,9 @@ predicted_tss_s0.7 <- read.table(file = "./predicted_TSS_2.35_-18.07.txt",
 head(predicted_tss_s0.7)
 ```
 
-**Podemos graficar $D(n)$, E1 y E2 para la secuencia "b1130"**. Procesada con una sensibilidad de 0.7 se puede observar un valor de $D(n)$ sobre el umbral, lo que nos indica que podría estar allí el TSS.  
+**Podemos graficar $D(n)$, E1 y E2 para la secuencia "b1130"**. Procesada con una sensibilidad de 0.7 se puede observar un valor de $D(n)$ sobre el umbral, lo que nos indica que podría estar allí el TSS. En este caso tiene sentido debido a que la posición en la que cae es un potencial lugar.  
 
-```{r echo = FALSE}
+```{r echo = FALSE, warning=FALSE}
 id <- "b1130"
 plot(x = predicted_tss_s0.7[predicted_tss_s0.7$id==id, 'pos'],
      y = predicted_tss_s0.7[predicted_tss_s0.7$id==id, 'E1'],
@@ -344,7 +348,7 @@ text(x=0, y=c(2.8,-17.6), labels = c("D cut-off", "E1 cut-off"), cex = 0.7)
 
 En esta sección podemos **graficamos $D(n)$, E1 y E2 para una posición $n$ al azar** para ver más predicciones de TSS de las demás secuencias.
 
-```{r echo = FALSE}
+```{r echo = FALSE, warning=FALSE}
 id <- sample(levels(predicted_tss_s0.9[,'id']),1)
 plot(x = predicted_tss_s0.7[predicted_tss_s0.7$id==id, 'pos'],
      y = predicted_tss_s0.7[predicted_tss_s0.7$id==id, 'E1'],
@@ -368,6 +372,7 @@ plot(x = predicted_tss_s0.9[(predicted_tss_s0.9$id==id), 'pos'],
      y = predicted_tss_s0.9[predicted_tss_s0.9$id==id, 'E1'],
      xlim = c(-400, 50),
      ylim = c(-20, 5), type = "l",
+     ylab = "Energía libre de Gibbs", xlab = "Posición",
      main = "Para un n alaeatorio con sensibilida de 0.9")
 lines(x = predicted_tss_s0.9[predicted_tss_s0.9$id==id, 'pos'],
      y = predicted_tss_s0.9[predicted_tss_s0.9$id==id, 'E2'])
@@ -379,3 +384,29 @@ lines(-400:50, y = rep(0,451))
 text(x=0, y=c(1.3,-17.8), labels = c("D cut-off", "E1 cut-off"), cex = 0.7)
 ```
 
+## Frecuencias  
+
+### Para una sensibilidad de 0.7  
+```{r echo = FALSE, warning = FALSE}
+hist(x = predicted_tss_s0.7[predicted_tss_s0.7$result=="positivo", 'pos'],
+     breaks = 40, main = "Frecuencia de predicción de promotor entre secuencias",
+     xlab = "Ventana - Posición", ylab = "Frecencia de predicción",
+     col = colors()[120:160])
+```
+
+### Para una sensibilidad de 0.9  
+```{r echo = FALSE, warning = FALSE}
+hist(x = predicted_tss_s0.9[predicted_tss_s0.9$result=="positivo", 'pos'],
+     breaks = 40, main = "Frecuencia de predicción de promotor entre secuencias",
+     xlab = "Ventana - Posición", ylab = "Frecencia de predicción",
+     col = colors()[40:80])
+```
+
+Observamos que al conseguir más sensibilidad la cantidad de predicciones aumenta debido a que se presenta aún más falsos positivos y esto se refleja en un histograma de distribución más uniforme. Sin embargo no logra apreciarse bien una zona de predicción, por lo que podríamos inferir que los datos son muy variables.  
+
+## Conclusión  
+
+Podemos concluir que, al menos en particular con este conjunto de secuencias, no se puede indentificar una zona donde caigan frecuentemente los TSS.
+Podríamos decir que con base en la energía libre de la secuencia completa no es muy fiable la predicción; es por eso que se recurre a zonas más puntuales con este tipo de enfoques de Nearest Neighbor $\Delta G$. Sin embargo, este conjunto de datos presentó una gran variabilida en cuanto a las predicciones, por lo que debería revisarse bien el procedimiento de obtención o, más convenientemente, cambiar de enfoque. Por ejemplo podemos encontrar directamente la secuencia donde se pegan los promotores debido a que presentan una conservación mayor.
+
+***  
